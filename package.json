@@ -1,0 +1,15 @@
+{
+  "name": "mario-35th-anniversary",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Thomas KIM",
+  "license": "UNLICENSED",
+  "scripts": {
+    "getMostPopularPosts": "node ./index.js"
+  },
+  "dependencies": {
+    "axios": "^0.20.0",
+    "chalk": "^4.1.0",
+    "cli-progress": "^3.8.2"
+  }
+}
