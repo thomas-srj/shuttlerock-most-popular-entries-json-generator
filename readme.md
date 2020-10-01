@@ -3,10 +3,9 @@
 This NodeJS script takes 3 parameters:
 -  Shuttlerock's Site ( **X** ),
 -  Shuttlerock's Board ( **Y** ),
--  number of posts ( **N** ).
+-  Number of entries per page ( **N** ).
 
-Based on those, it will create a JSON file containing the **N** most popular entries on the board **Y** from site **X**.
-
+The script will get all the entries for this board, order them by their number of `social_likes` and then create multiple JSON files containing N entries each.
 
 ## Installation
 
@@ -28,13 +27,17 @@ The command is:
 
 So for example:
 
-`npm run getMostPopularPosts keiji last-of-birth 20`
+`npm run getMostPopularPosts test-site board-1 20`
 
-Will get the **20** most popular posts of the board **last-of-birth** on the site **keiji**
+or, to merge multiple boards:
+
+`npm run getMostPopularPosts test-site board-1,board-2,board-3 20`
 
 ## How to get the JSON file
 
 After running the previous command, the script will create a folder called **data** within the project's folder. Within this data folder you will find the generated JSON file(s).
+
+The script creates a file called `liked-entry-{board name}-status.json` containing useful datas such as update date, number of entries and pages.
 
 ### Support
 
