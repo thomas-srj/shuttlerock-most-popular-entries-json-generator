@@ -5,7 +5,8 @@
   "author": "Thomas KIM",
   "license": "UNLICENSED",
   "scripts": {
-    "getMostPopularPosts": "node ./index.js"
+    "getMostPopularPosts": "node ./index.js",
+    "nintendo-sugowaza": "yarn getMostPopularPosts nintendo-sugowaza mario-1 12; yarn getMostPopularPosts nintendo-sugowaza mario-2 12; yarn getMostPopularPosts nintendo-sugowaza mario-3 12; yarn getMostPopularPosts nintendo-sugowaza mario-1,mario-2,mario-3 12 "
   },
   "dependencies": {
     "axios": "^0.20.0",

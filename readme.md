@@ -33,6 +33,10 @@ or, to merge multiple boards:
 
 `npm run getMostPopularPosts test-site board-1,board-2,board-3 20`
 
+**I've also written premade commands for some specific clients:**
+
+`npm run nintendo-sugowaza` will generate all the json files required for this client.
+
 ## How to get the JSON file
 
 After running the previous command, the script will create a folder called **data** within the project's folder. Within this data folder you will find the generated JSON file(s).
