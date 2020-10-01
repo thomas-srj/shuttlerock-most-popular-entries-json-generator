@@ -13,26 +13,49 @@ const cliProgress = require('cli-progress');
 const args = process.argv.slice(2)
 const site = args[0]
 const board = args[1]
-const number_of_items = args[2]
+const number_of_items_per_page = args[2]
 const format = "JSON"
 
 console.log(chalk.green('Starting "getMostPopularPosts" script!'))
 console.log(chalk.grey('============================================'))
 console.log(chalk.cyan('Using site: ' + site))
 console.log(chalk.cyan('Using board: ' + board))
-console.log(chalk.cyan('Returning: ' + number_of_items + ' most popular posts.'))
+console.log(chalk.cyan('Returning: ' + number_of_items_per_page + ' items per json file.'))
 console.log(chalk.cyan('As a: ' + format + ' file.'))
 console.log(chalk.grey('============================================'))
 
-const getNumberOfPages = () => {
-  return new Promise((resolve) => {
-    const url = `https://api.shuttlerock.com/v2/${site}/boards/${board}`
-    axios.get(url)
-    .then(function (response) {
-      const number_of_submissions = response.data.statistics.submissions
-      resolve( Math.ceil(number_of_submissions / 20) )
-    })
+const getNumberOfPages = async () => {
+  const boards = board.split(',')
+  return new Promise( async (resolve) => {
+    let number_of_submissions = 0
+    while(boards.length > 0) {
+      const nextBoard = boards.pop()
+      const url = `https://api.shuttlerock.com/v2/${site}/boards/${nextBoard}`
+      await axios.get(url)
+      .then(function (response) {
+        number_of_submissions += response.data.statistics.submissions
+      })
+    }
+    generateStatusJSON(number_of_submissions)
+    resolve( Math.ceil(number_of_submissions / number_of_items_per_page) )
   })
+}
+
+const generateStatusJSON = (number_of_submissions) => {
+  const data = {
+    total_entries: number_of_submissions,
+    total_pages: Math.ceil(number_of_submissions / number_of_items_per_page),
+    entries_per_page: number_of_items_per_page,
+    updated_at: new Date()
+  }
+  const json_data = JSON.stringify(data)
+  if (!fs.existsSync('data')) {
+    fs.mkdirSync('data')
+  }
+  const outputFileName = `liked-entry-${board}-status.json`
+  fs.writeFileSync('data/'+ outputFileName, json_data)
+  console.log(chalk.green('Created file: ' + outputFileName))
+  console.log(chalk.yellow((__dirname + '/data/' + outputFileName)))
 }
 
 const getAPIURL = (page = 1) => {
@@ -57,18 +80,26 @@ const loadAllEntries = (page, max_page) => {
 
 const sortEntries = () => {
   entries = entries.sort((a, b) => (parseInt(a.statistics.social_likes) < parseInt(b.statistics.social_likes)) ? 1 : -1)
+  generateEntriesJSONFiles()
+}
 
-  const json_data = JSON.stringify(entries.slice(0, number_of_items))
-  if (!fs.existsSync('data')) {
-    fs.mkdirSync('data')
+const generateEntriesJSONFiles = () => {
+  let i,j,chunk = parseInt( number_of_items_per_page )
+  let pageCount = 1
+  for (i=0,j=entries.length; i<j; i+=chunk) {
+    const entries_portion = entries.slice(i,i+chunk)
+    const json_data = JSON.stringify(entries_portion)
+    if (!fs.existsSync('data')) {
+      fs.mkdirSync('data')
+    }
+    const outputFileName = `liked-entry-${board}-${pageCount}.json`
+    fs.writeFileSync('data/'+ outputFileName, json_data);
+    
+    console.log(chalk.green('Created file: ' + outputFileName))
+    console.log(chalk.yellow((__dirname + '/data/' + outputFileName)))
+
+    pageCount++
   }
-  
-  const date = new Date()
-  const outputFileName = `${site}-${board}--${date.getFullYear()}-${date.getMonth()}-${date.getDay()}-${date.getHours()}h${date.getMinutes()}m`
-  fs.writeFileSync('data/'+ outputFileName +'.json', json_data);
-  
-  console.log(chalk.green('Created file: ' + outputFileName))
-  console.log(chalk.blue((__dirname + '/data/' + outputFileName)))
 }
 
 const scrapingProgress = new cliProgress.SingleBar({linewrap: true}, cliProgress.Presets.rect);
