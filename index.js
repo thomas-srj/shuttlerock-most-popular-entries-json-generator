@@ -43,10 +43,7 @@ const getNumberOfPages = async () => {
 
 const generateStatusJSON = (number_of_submissions) => {
   const data = {
-    total_entries: number_of_submissions,
-    total_pages: Math.ceil(number_of_submissions / number_of_items_per_page),
-    entries_per_page: number_of_items_per_page,
-    updated_at: new Date()
+    total_pages: Math.ceil(number_of_submissions / number_of_items_per_page)
   }
   const json_data = JSON.stringify(data)
   if (!fs.existsSync('data')) {
