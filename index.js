@@ -9,6 +9,7 @@ const fs = require('fs')
 const chalk = require('chalk')
 const axios = require('axios')
 const cliProgress = require('cli-progress');
+const AdmZip = require('adm-zip');
 
 const args = process.argv.slice(2)
 const site = args[0]
@@ -97,6 +98,9 @@ const generateEntriesJSONFiles = () => {
 
     pageCount++
   }
+  const file = new AdmZip();
+  file.addLocalFolder('./data');
+  fs.writeFileSync('output.zip', file.toBuffer());
 }
 
 const scrapingProgress = new cliProgress.SingleBar({linewrap: true}, cliProgress.Presets.rect);

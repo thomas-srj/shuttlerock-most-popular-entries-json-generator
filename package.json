@@ -9,6 +9,7 @@
     "nintendo-sugowaza": "yarn getMostPopularPosts nintendo-sugowaza mario-1 12; yarn getMostPopularPosts nintendo-sugowaza mario-2 12; yarn getMostPopularPosts nintendo-sugowaza mario-3 12; yarn getMostPopularPosts nintendo-sugowaza mario-1,mario-2,mario-3 12 "
   },
   "dependencies": {
+    "adm-zip": "^0.4.16",
     "axios": "^0.20.0",
     "chalk": "^4.1.0",
     "cli-progress": "^3.8.2"
